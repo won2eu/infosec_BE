@@ -1,9 +1,12 @@
 #app/dependencies/jwt_utils.py
 from datetime import datetime, timedelta, timezone
 from jose import jwt
+import os
+from dotenv import load_dotenv
 
-SECRET_KEY = '1234' #임시값
-ALG = "HS256"
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY", "1234")  # 기본값으로 임시값 사용
+ALG = os.getenv("ALGORITHM", "HS256")
 
 class JWTUtil:
     # 1. JWT 토큰 생성 함수
