@@ -3,6 +3,7 @@ from passlib.context import CryptContext
 from models.user import User
 from models.schemas import UserCreate, UserLogin
 from dependencies.jwt_utils import JWTUtil
+from dependencies.redis_client import session_manager
 from fastapi import HTTPException, status
 
 # 비밀번호 해싱을 위한 설정
@@ -69,11 +70,20 @@ class UserService:
         return user
     
     def create_access_token(self, user: User) -> str:
-        """사용자 정보로 JWT 토큰을 생성합니다."""
+        """사용자 정보로 JWT 토큰을 생성하고 Redis 세션을 생성합니다."""
         payload = {
             "sub": str(user.id),
             "login_id": user.login_id,
             "name": user.name,
             "position": user.user_position
         }
-        return jwt_util.create_token(payload)
+        token = jwt_util.create_token(payload)
+        
+        # Redis에 세션 생성 (30분 TTL)
+        session_manager.create_session(str(user.id), token, ttl=1800)
+        
+        return token
+    
+    def logout_user(self, user_id: str) -> bool:
+        """사용자를 로그아웃 처리합니다."""
+        return session_manager.delete_session(user_id)

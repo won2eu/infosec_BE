@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from .user import Position
 
 class UserCreate(BaseModel):
@@ -25,3 +25,18 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+# File Station 관련 스키마
+class FileItem(BaseModel):
+    path: str
+    name: str
+    isdir: bool
+    size: Optional[int] = None
+    owner: Optional[str] = None
+    time: Optional[int] = None
+
+class FileListResponse(BaseModel):
+    files: List[FileItem]
+    total: int
+    offset: int
+    limit: int
