@@ -8,8 +8,8 @@ from models.schemas import FileItem, FileListResponse
 class FileStationService:
     def __init__(self):
         self.nas_url = "https://pnu-infosec.tw4.quickconnect.to"
-        self.username = os.getenv("NAS_USERNAME", "seungwon")
-        self.password = os.getenv("NAS_PASSWORD", "XyBb9UcF")
+        self.username = os.getenv("NAS_USERNAME", "")
+        self.password = os.getenv("NAS_PASSWORD", "")
         self.session_id: Optional[str] = None
         self.client = httpx.AsyncClient(verify=False, timeout=30.0, follow_redirects=True)
     
